@@ -14,7 +14,6 @@
     href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap"
     rel="stylesheet">
   <style>
-
     :root {
       --green: #008542;
       --green-dark: #006633;
@@ -452,7 +451,7 @@
     /* ── Currency conversion ── */
     .currency-row {
       display: flex;
-      align-items: flex-end;
+      align-items: flex-start;
       gap: 24px;
       padding: 14px 32px 16px;
       border-top: 1px solid var(--border);
@@ -509,6 +508,109 @@
     .ct-btn:not(.active):hover {
       background: var(--yellow-light);
       color: var(--yellow-dark)
+    }
+
+    .currency-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      white-space: nowrap;
+      line-height: 1.5
+    }
+
+    .currency-badge.brl {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0
+    }
+
+    .currency-badge.usd {
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fcd34d
+    }
+
+    .currency-badge.unk {
+      background: var(--surface2);
+      color: var(--text-4);
+      border: 1px solid var(--border)
+    }
+
+    .ship-usd-group {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      flex: 0 0 auto
+    }
+
+    .ship-usd-group.show {
+      display: flex
+    }
+
+    .ship-usd-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 35px
+    }
+
+    .ship-usd-input {
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 0 10px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-sm);
+      background: var(--surface);
+      color: var(--text-1);
+      width: 140px;
+      height: 35px;
+      box-sizing: border-box
+    }
+
+    .ship-usd-input:focus {
+      outline: none;
+      border-color: var(--yellow);
+      background: var(--yellow-light)
+    }
+
+    .ship-usd-hint {
+      font-size: 10px;
+      color: var(--text-4);
+      font-family: var(--mono)
+    }
+
+    .ship-reset-btn {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 0 14px;
+      height: 35px;
+      border-radius: var(--r-sm);
+      border: 1.5px solid var(--border2);
+      background: var(--surface);
+      color: var(--text-3);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all .15s
+    }
+
+    .ship-reset-btn:hover {
+      border-color: var(--blue);
+      background: var(--blue-light);
+      color: var(--blue)
+    }
+
+    .ship-reset-btn.active {
+      background: var(--yellow);
+      color: #5a3d00;
+      border-color: var(--yellow);
+      font-weight: 700
     }
 
     .currency-preview {
@@ -2364,6 +2466,59 @@
       line-height: 1.6
     }
 
+    .budget-loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .45);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px
+    }
+
+    .budget-loading-overlay.show {
+      display: flex
+    }
+
+    .budget-loading-spinner {
+      width: 52px;
+      height: 52px;
+      border: 5px solid rgba(255, 255, 255, .25);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .75s linear infinite
+    }
+
+    .budget-loading-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 28px 36px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .25);
+      min-width: 220px
+    }
+
+    .budget-loading-card .blc-icon {
+      font-size: 32px;
+      margin-bottom: 8px
+    }
+
+    .budget-loading-card .blc-title {
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-1);
+      margin-bottom: 4px
+    }
+
+    .budget-loading-card .blc-sub {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-4)
+    }
+
     .budget-sheet-sel {
       margin-bottom: 20px;
       display: none
@@ -2832,10 +2987,21 @@
         <div class="currency-toggle-group">
           <div class="cfg-label" id="currencyFileLabel">Arquivo em dólar (US$)</div>
           <div class="currency-toggle">
-            <button class="ct-btn active" id="ctNone" onclick="setCurrency('none')">Nenhum (ambos R$)</button>
+            <button class="ct-btn active" id="ctNone" onclick="setCurrency('none')">Ambos iguais</button>
             <button class="ct-btn" id="ctA" onclick="setCurrency('a')">Arquivo A</button>
             <button class="ct-btn" id="ctB" onclick="setCurrency('b')">Arquivo B</button>
             <button class="ct-btn" id="ctAll" onclick="setCurrency('all')" style="display:none">Todos (ambos $)</button>
+          </div>
+        </div>
+        <div class="ship-usd-group" id="shipUsdGroup">
+          <div class="cfg-label">Navios em dólar (US$)</div>
+          <div class="ship-usd-row" style="align-items:flex-start">
+            <button class="ship-reset-btn active" id="btnShipAllBRL" onclick="clearShipUsd()">Ambos iguais</button>
+            <div style="display:flex;flex-direction:column;gap:3px">
+              <input type="text" class="ship-usd-input" id="shipUsdInput" placeholder="Ex: 1, 3"
+                oninput="onShipUsdChange()" title="Números dos navios em USD separados por vírgula">
+              <div class="ship-usd-hint">Nº dos navios em US$, separados por vírgula</div>
+            </div>
           </div>
         </div>
         <div class="currency-preview hidden" id="currencyPreview">
@@ -3128,8 +3294,10 @@
           const pill = qs('#pill' + t.toUpperCase());
           pill.classList.add('show');
           qs('#pill' + t.toUpperCase() + 'Name').textContent = file.name;
-          qs('#pill' + t.toUpperCase() + 'Meta').textContent =
-            `${wb.SheetNames.length} aba(s) · ${(file.size / 1024).toFixed(1)} KB`;
+          const _cur = detectFileCurrency(wb);
+          qs('#pill' + t.toUpperCase() + 'Meta').innerHTML =
+            `${wb.SheetNames.length} aba(s) · ${(file.size / 1024).toFixed(1)} KB` +
+            (_cur ? ' &nbsp;' + currencyBadgeHtml(_cur) : '');
 
           checkReady();
           rebuildSheetChips();
@@ -3588,6 +3756,8 @@
     }
 
     function onRateChange() {
+      // no modo navios, delegar ao handler específico que lê o campo de texto
+      if (S.mode === 'ship') { onShipUsdChange(); return; }
       const rate = parseFloat(qs('#usdRate').value) || 0;
       const target = S.currencyTarget || 'none';
       const preview = qs('#currencyPreview');
@@ -3605,6 +3775,105 @@
         cpFrom.textContent = target === 'a' ? 'Arquivo A (USD → R$)' : 'Arquivo B (USD → R$)';
       }
       cpRate.textContent = `R$ ${rate.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+
+    // lê o campo de navios USD e retorna um Set com os índices (0-based) dos navios em dólar
+    function getShipUsdSet() {
+      const input = qs('#shipUsdInput');
+      if (!input || !input.value.trim()) return new Set();
+      const result = new Set();
+      input.value.split(',').forEach(part => {
+        const n = parseInt(part.trim(), 10);
+        if (!isNaN(n) && n >= 1) result.add(n - 1); // converte 1-based → 0-based
+      });
+      return result;
+    }
+
+    // limpa o campo e volta pro estado "Ambos R$"
+    // lê a aba RESUME para descobrir a moeda do arquivo
+    // estratégia: varrer todas as células das primeiras 30 linhas procurando
+    // "SELECT CURRENCY". Quando achar, busca BRL/USD na mesma linha
+    // (em qualquer coluna à direita, com até 10 colunas de distância)
+    // e também nas linhas imediatamente abaixo (caso o valor esteja em outra linha)
+    function detectFileCurrency(wb) {
+      if (!wb) return null;
+      const ws = wb.Sheets['RESUME'] || wb.Sheets['Resume'] || wb.Sheets['resume'];
+      if (!ws) return null;
+
+      const ref = ws['!ref'];
+      if (!ref) return null;
+
+      // decodificar o range completo da aba
+      const range = XLSX.utils.decode_range(ref);
+      const maxRow = Math.min(range.e.r, 29); // primeiras 30 linhas
+      const maxCol = range.e.c;
+
+      for (let r = 0; r <= maxRow; r++) {
+        for (let c = 0; c <= maxCol; c++) {
+          const addr = XLSX.utils.encode_cell({ r, c });
+          const cell = ws[addr];
+          if (!cell || cell.v === undefined) continue;
+          if (!String(cell.v).toUpperCase().includes('CURRENCY')) continue;
+
+          // achou o label — buscar BRL/USD na mesma linha (até 8 colunas à direita)
+          for (let dc = 1; dc <= 8; dc++) {
+            if (c + dc > maxCol) break;
+            const vAddr = XLSX.utils.encode_cell({ r, c: c + dc });
+            const vCell = ws[vAddr];
+            if (!vCell || vCell.v === undefined || vCell.v === null) continue;
+            const val = String(vCell.v).trim().toUpperCase();
+            if (val === 'BRL' || val === 'USD') return val;
+          }
+
+          // não achou na mesma linha — tentar nas 2 linhas seguintes, mesma coluna e adjacentes
+          for (let dr = 1; dr <= 2; dr++) {
+            for (let dc = 0; dc <= 8; dc++) {
+              if (c + dc > maxCol || r + dr > maxRow) continue;
+              const vAddr = XLSX.utils.encode_cell({ r: r + dr, c: c + dc });
+              const vCell = ws[vAddr];
+              if (!vCell || vCell.v === undefined || vCell.v === null) continue;
+              const val = String(vCell.v).trim().toUpperCase();
+              if (val === 'BRL' || val === 'USD') return val;
+            }
+          }
+        }
+      }
+      return null;
+    }
+
+    // monta o HTML do badge de moeda
+    function currencyBadgeHtml(currency) {
+      if (currency === 'BRL') return '<span class="currency-badge brl">🇧🇷 BRL</span>';
+      if (currency === 'USD') return '<span class="currency-badge usd">🇺🇸 USD</span>';
+      return '';
+    }
+
+    function clearShipUsd() {
+      const input = qs('#shipUsdInput');
+      if (input) input.value = '';
+      onShipUsdChange();
+    }
+
+    // atualiza a pré-visualização e o estado do botão "Ambos R$"
+    function onShipUsdChange() {
+      const rate = parseFloat(qs('#usdRate').value) || 0;
+      const usdSet = getShipUsdSet();
+      const preview = qs('#currencyPreview');
+      const resetBtn = qs('#btnShipAllBRL');
+
+      // botão "Ambos R$" fica ativo quando campo está vazio (nenhum navio em USD)
+      if (resetBtn) resetBtn.classList.toggle('active', usdSet.size === 0);
+
+      if (preview) {
+        if (rate > 0 && usdSet.size > 0) {
+          const nums = [...usdSet].map(i => i + 1).join(', ');
+          qs('#cpFrom').textContent = `Navio${usdSet.size > 1 ? 's' : ''} ${nums}`;
+          qs('#cpRate').textContent = rate.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+          preview.classList.remove('hidden');
+        } else {
+          preview.classList.add('hidden');
+        }
+      }
     }
 
     function runComparison() {
@@ -4220,47 +4489,72 @@
       if (f) processBudgetFile(f, t);
     }
 
+    function _showBudgetLoading(title, sub) {
+      const overlay = qs('#budgetLoadingOverlay');
+      if (!overlay) return;
+      qs('#budgetLoadingTitle').textContent = title || 'Analisando…';
+      qs('#budgetLoadingSub').textContent = sub || '';
+      overlay.classList.add('show');
+    }
+    function _hideBudgetLoading() {
+      const overlay = qs('#budgetLoadingOverlay');
+      if (overlay) overlay.classList.remove('show');
+    }
+
     function processBudgetFile(file, t) {
       const reader = new FileReader();
       reader.onload = ev => {
-        try {
-          const raw = ev.target.result;
-          const wb = XLSX.read(raw, { type: 'array', cellStyles: true, sheetStubs: true });
+        // mostrar overlay antes do XLSX.read (que é síncrono e trava a UI)
+        _showBudgetLoading('Lendo arquivo…', file.name.slice(0, 40));
+        // setTimeout deixa o browser renderizar o overlay antes de bloquear
+        setTimeout(() => {
+          try {
+            const raw = ev.target.result;
+            const wb = XLSX.read(raw, { type: 'array', cellStyles: true, sheetStubs: true });
 
-          const cardId = t === 'a' ? 'budgetCardA' : 'budgetCardB';
-          const pillId = t === 'a' ? 'budgetPillA' : 'budgetPillB';
-          const nameId = t === 'a' ? 'budgetPillAName' : 'budgetPillBName';
-          const metaId = t === 'a' ? 'budgetPillAMeta' : 'budgetPillBMeta';
+            const cardId = t === 'a' ? 'budgetCardA' : 'budgetCardB';
+            const pillId = t === 'a' ? 'budgetPillA' : 'budgetPillB';
+            const nameId = t === 'a' ? 'budgetPillAName' : 'budgetPillBName';
+            const metaId = t === 'a' ? 'budgetPillAMeta' : 'budgetPillBMeta';
 
-          if (t === 'a') {
-            S.budgetWbA = wb;
-            S.budgetRawA = raw;
-            S.budgetNameA = file.name;
-          } else {
-            S.budgetWbB = wb;
-            S.budgetRawB = raw;
-            S.budgetNameB = file.name;
+            if (t === 'a') {
+              S.budgetWbA = wb;
+              S.budgetRawA = raw;
+              S.budgetNameA = file.name;
+            } else {
+              S.budgetWbB = wb;
+              S.budgetRawB = raw;
+              S.budgetNameB = file.name;
+            }
+
+            qs('#' + cardId).classList.add('loaded');
+            const pill = qs('#' + pillId);
+            pill.classList.add('show');
+            qs('#' + nameId).textContent = file.name;
+            const _budgetCur = detectFileCurrency(wb);
+            qs('#' + metaId).innerHTML = `${wb.SheetNames.length} aba(s) · ${(file.size / 1024).toFixed(0)} KB` +
+              (_budgetCur ? ' &nbsp;' + currencyBadgeHtml(_budgetCur) : '');
+
+            // Construir seletor de abas quando ambos carregados
+            if (S.budgetWbA && S.budgetWbB) {
+              _showBudgetLoading('Mapeando células amarelas…', 'Pode levar alguns segundos');
+              // novo setTimeout para renderizar a mensagem atualizada antes do trabalho pesado
+              setTimeout(() => {
+                buildBudgetSheetSelector();
+              }, 30);
+            } else {
+              _hideBudgetLoading();
+              qs('#budgetSheetSel').classList.remove('show');
+              qs('#btnBudgetRun').disabled = true;
+            }
+
+            // Reset de resultados anteriores
+            qs('#budgetResults').classList.remove('show');
+          } catch (e) {
+            _hideBudgetLoading();
+            toast('Erro ao ler arquivo: ' + e.message, 'err');
           }
-
-          qs('#' + cardId).classList.add('loaded');
-          const pill = qs('#' + pillId);
-          pill.classList.add('show');
-          qs('#' + nameId).textContent = file.name;
-          qs('#' + metaId).textContent = `${wb.SheetNames.length} aba(s) · ${(file.size / 1024).toFixed(0)} KB`;
-
-          // Construir seletor de abas quando ambos carregados
-          if (S.budgetWbA && S.budgetWbB) {
-            buildBudgetSheetSelector();
-          } else {
-            qs('#budgetSheetSel').classList.remove('show');
-            qs('#btnBudgetRun').disabled = true;
-          }
-
-          // Reset de resultados anteriores
-          qs('#budgetResults').classList.remove('show');
-        } catch (e) {
-          toast('Erro ao ler arquivo: ' + e.message, 'err');
-        }
+        }, 30); // fecha o setTimeout do XLSX.read
       };
       reader.readAsArrayBuffer(file);
     }
@@ -4278,6 +4572,7 @@
         qs('#budgetPillB').classList.remove('show');
         qs('#budgetFileB').value = '';
       }
+      _hideBudgetLoading();
       qs('#budgetSheetSel').classList.remove('show');
       qs('#budgetSheetChips').innerHTML = '';
       S.budgetSelectedSheets = new Set();
@@ -4711,10 +5006,14 @@
         if (sheetSel) sheetSel.style.display = '';
         initShipSlots();
         qs('#btnRun').querySelector('span:last-child').textContent = 'Comparar Navios';
-        qs('#ctAll').style.display = '';
+        // no modo navios: ocultar todo o grupo de botões e mostrar o campo de texto
+        qs('#ctAll').style.display = 'none';
         qs('#ctA').style.display = 'none';
         qs('#ctB').style.display = 'none';
-        qs('#currencyFileLabel').textContent = 'Navios em dólar (US$)';
+        qs('#ctNone').style.display = 'none';
+        qs('.currency-toggle-group').style.display = 'none';
+        qs('#currencyFileLabel').style.display = 'none';
+        qs('#shipUsdGroup').classList.add('show');
         if (S.currencyTarget === 'a' || S.currencyTarget === 'b') setCurrency('none');
       } else {
         qs('#normalUploadArea').style.display = '';
@@ -4729,9 +5028,13 @@
         qs('#cardB .drop-label').innerHTML = '<strong>Clique ou arraste</strong> o arquivo de custo real';
         qs('#btnRun').querySelector('span:last-child').textContent = 'Analisar Divergências';
         qs('#ctAll').style.display = 'none';
+        qs('#ctNone').style.display = '';
         qs('#ctA').style.display = '';
         qs('#ctB').style.display = '';
+        qs('.currency-toggle-group').style.display = '';
+        qs('#currencyFileLabel').style.display = '';
         qs('#currencyFileLabel').textContent = 'Arquivo em dólar (US$)';
+        qs('#shipUsdGroup').classList.remove('show');
         if (S.currencyTarget === 'all') setCurrency('none');
       }
       if (m !== 'budget') rebuildSheetChips();
@@ -4781,7 +5084,10 @@
           <span class="ship-slot-file-icon">📄</span>
           <div class="ship-slot-file-info">
             <span class="ship-slot-pill-name" title="${esc(ship.name)}">${esc(ship.name)}</span>
-            <div class="ship-slot-file-ok">✓ Pronto para comparação</div>
+            <div style="display:flex;align-items:center;gap:6px;margin-top:2px">
+              <span class="ship-slot-file-ok" style="margin:0">✓ Pronto</span>
+              ${ship.currency ? currencyBadgeHtml(ship.currency) : ''}
+            </div>
           </div>
           <button class="btn-rm-file" onclick="clearShipSlot(${i})" title="Remover arquivo">✕</button>
         </div>
@@ -4842,7 +5148,8 @@
       reader.onload = ev => {
         try {
           const wb = XLSX.read(ev.target.result, { type: 'array', cellDates: true });
-          S.ships[i] = { wb, name: file.name };
+          const _shipCur = detectFileCurrency(wb);
+          S.ships[i] = { wb, name: file.name, currency: _shipCur };
           renderShipSlots();
           rebuildSheetChips();
           checkReady();
@@ -4940,11 +5247,13 @@
       setTimeout(() => {
         try {
           const fxRate = parseFloat(qs('#usdRate').value) || 0;
-          const fxTarget = S.currencyTarget || 'none';
-          const fx = (fxRate > 0 && fxTarget === 'all') ? fxRate : 1;
+          const usdSet = getShipUsdSet(); // índices (0-based) dos navios em dólar
 
-          // Build one index per ship
-          const indexes = activeShips.map(s => buildShipIndex(s.wb, fx));
+          // cada navio recebe seu próprio multiplier: fxRate se for USD, 1 se for BRL
+          const indexes = activeShips.map((s, i) => {
+            const multiplier = (fxRate > 0 && usdSet.has(i)) ? fxRate : 1;
+            return buildShipIndex(s.wb, multiplier);
+          });
           const n = activeShips.length;
 
           // Collect all keys across all ships
@@ -5446,12 +5755,14 @@
             });
 
             const hasSheets = Object.keys(counts).length > 0;
+            _hideBudgetLoading();
             qs('#budgetSheetSel').classList.toggle('show', hasSheets);
             qs('#btnBudgetRun').disabled = !hasSheets;
             if (!hasSheets) toast('Nenhuma célula amarela com valor foi encontrada no arquivo B', 'err');
           });
         });
       }).catch(err => {
+        _hideBudgetLoading();
         console.error('buildBudgetSheetSelector:', err);
         toast('Erro ao analisar células amarelas: ' + err.message, 'err');
         qs('#btnBudgetRun').disabled = true;
@@ -5491,6 +5802,13 @@
 
     document.head.appendChild(s);
   </script>
+  <div class="budget-loading-overlay" id="budgetLoadingOverlay">
+    <div class="budget-loading-card">
+      <div class="blc-icon">📊</div>
+      <div class="blc-title" id="budgetLoadingTitle">Analisando arquivo…</div>
+      <div class="blc-sub" id="budgetLoadingSub">Identificando células amarelas</div>
+    </div>
+  </div>
 </body>
 
 </html>
